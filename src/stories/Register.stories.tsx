@@ -5,7 +5,7 @@ import {
   CSSReset,
 } from "@chakra-ui/core";
 import React from "react";
-import { Register, RegisterProps } from "../pages/Register";
+import { Register, RegisterProps } from "../pages/register";
 
 export default {
   title: "Pages/Register",

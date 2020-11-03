@@ -37,5 +37,13 @@ export const Simple = Story.bind({});
 Simple.args = {
   name: "playerName",
   label: "Player Name",
-  placeholder: "your name",
+  placeholder: "your name"
+};
+
+export const Password = Story.bind({});
+Password.args = {
+  name: "password",
+  label: "Password",
+  placeholder: "password",
+  type: "password"
 };
