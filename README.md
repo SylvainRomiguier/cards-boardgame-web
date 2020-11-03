@@ -1,3 +1,3 @@
 # Cards boardgame web app
 
-An implementation of the "Love Letters" board game in React
+An implementation of the "Love Letter" board game in React
