@@ -12,6 +12,8 @@ import React from "react";
 import { useMutation } from "urql";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
+import * as cardBackground from "../assets/cardBackgrounds/fond_carte_11.png";
+import { WrapperCard } from "../components/WrapperCard";
 
 export interface RegisterProps {
   variant?: "small" | "regular";
@@ -30,42 +32,44 @@ const REGISTER_MUTATION = `mutation Login($playername: String!, $password: Strin
 }`;
 
 export const Register: React.FC<RegisterProps> = ({ variant = "regular" }) => {
-  const [,login] = useMutation(REGISTER_MUTATION);
+  const [, login] = useMutation(REGISTER_MUTATION);
   return (
     <Wrapper variant={variant}>
-      <Formik
-        initialValues={{ playerName: "", password: "" }}
-        onSubmit={(values) => {
-          console.log(values);
-          login({playername: values.playerName, password: values.password});
-        }}
-      >
-        {({ values, handleChange, isSubmitting }) => (
-          <Form>
-            <InputField
-              name="playerName"
-              placeholder="your name"
-              label="Player name"
-            />
-            <Box mt={4}>
+      <WrapperCard background={cardBackground}>
+        <Formik
+          initialValues={{ playerName: "", password: "" }}
+          onSubmit={(values) => {
+            console.log(values);
+            login({ playername: values.playerName, password: values.password });
+          }}
+        >
+          {({ values, handleChange, isSubmitting }) => (
+            <Form>
               <InputField
-                name="password"
-                placeholder="password"
-                label="Password"
-                type="password"
+                name="playerName"
+                placeholder="your name"
+                label="Player name"
               />
-            </Box>
-            <Button
-              mt={4}
-              variantColor="teal"
-              isLoading={isSubmitting}
-              type="submit"
-            >
-              Register
-            </Button>
-          </Form>
-        )}
-      </Formik>
+              <Box mt={4}>
+                <InputField
+                  name="password"
+                  placeholder="password"
+                  label="Password"
+                  type="password"
+                />
+              </Box>
+              <Button
+                mt={4}
+                variantColor="teal"
+                isLoading={isSubmitting}
+                type="submit"
+              >
+                Register
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </WrapperCard>
     </Wrapper>
   );
 };
