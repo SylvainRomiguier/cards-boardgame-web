@@ -1,0 +1,9 @@
+mutation Login($playername: String!, $password: String!) {
+  login(playerFields: { name: $playername, password: $password }) {
+    errors {
+      field
+      message
+    }
+    player {id, name, email}
+  }
+}

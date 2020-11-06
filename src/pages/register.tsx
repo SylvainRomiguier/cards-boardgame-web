@@ -1,15 +1,10 @@
 import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
   Button,
   Box,
 } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
-import { loadGetInitialProps } from "next/dist/next-server/lib/utils";
 import React from "react";
-import { useMutation } from "urql";
+import { useLoginMutation } from "../generated/graphql";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
 import * as cardBackground from "../assets/cardBackgrounds/fond_carte_11.png";
@@ -18,29 +13,20 @@ import { WrapperCard } from "../components/WrapperCard";
 export interface RegisterProps {
   variant?: "small" | "regular";
 }
-
-const validateName = (_) => _;
-
-const REGISTER_MUTATION = `mutation Login($playername: String!, $password: String!) {
-  login(playerFields: { name: $playername, password: $password }) {
-    errors {
-      field
-      message
-    }
-    player {id, name, email}
-  }
-}`;
-
 export const Register: React.FC<RegisterProps> = ({ variant = "regular" }) => {
-  const [, login] = useMutation(REGISTER_MUTATION);
+  const [, login] = useLoginMutation();
   return (
     <Wrapper variant={variant}>
       <WrapperCard background={cardBackground}>
         <Formik
           initialValues={{ playerName: "", password: "" }}
-          onSubmit={(values) => {
-            console.log(values);
-            login({ playername: values.playerName, password: values.password });
+          onSubmit={async (values, {setErrors}) => {
+            const response = await login({ playername: values.playerName, password: values.password });
+            if(response.data?.login.errors) {
+              setErrors({
+                playerName: "erreur mon grand !"
+              });
+            }
           }}
         >
           {({ values, handleChange, isSubmitting }) => (
