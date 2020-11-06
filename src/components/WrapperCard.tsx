@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/core";
 import React from "react";
 
-interface WrapperCardProps {
+export interface WrapperCardProps {
   background?: string;
 }
 
