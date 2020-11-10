@@ -4,6 +4,8 @@ mutation Login($playername: String!, $password: String!) {
       field
       message
     }
-    player {id, name, email}
+    player {
+      ...RegularPlayer
+    }
   }
 }

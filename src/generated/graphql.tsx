@@ -47,6 +47,7 @@ export type Player = {
   id: Scalars['Int'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  lastLogin: Scalars['String'];
   name: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
@@ -62,6 +63,7 @@ export type Mutation = {
   updatePlayer?: Maybe<Player>;
   removePlayer: Scalars['Boolean'];
   login: UserResponse;
+  logout: Scalars['Boolean'];
 };
 
 
@@ -138,6 +140,11 @@ export type NamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type RegularPlayerFragment = (
+  { __typename?: 'Player' }
+  & Pick<Player, 'id' | 'name' | 'email' | 'lastLogin' | 'rank' | 'avatar'>
+);
+
 export type LoginMutationVariables = Exact<{
   playername: Scalars['String'];
   password: Scalars['String'];
@@ -153,12 +160,61 @@ export type LoginMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, player?: Maybe<(
       { __typename?: 'Player' }
-      & Pick<Player, 'id' | 'name' | 'email'>
+      & RegularPlayerFragment
     )> }
   ) }
 );
 
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
+);
+
+export type RegisterMutationVariables = Exact<{
+  playername: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
+}>;
+
+
+export type RegisterMutation = (
+  { __typename?: 'Mutation' }
+  & { createPlayer: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, player?: Maybe<(
+      { __typename?: 'Player' }
+      & RegularPlayerFragment
+    )> }
+  ) }
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'Player' }
+    & RegularPlayerFragment
+  )> }
+);
+
+export const RegularPlayerFragmentDoc = gql`
+    fragment RegularPlayer on Player {
+  id
+  name
+  email
+  lastLogin
+  rank
+  avatar
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($playername: String!, $password: String!) {
   login(playerFields: {name: $playername, password: $password}) {
@@ -167,14 +223,51 @@ export const LoginDocument = gql`
       message
     }
     player {
-      id
-      name
-      email
+      ...RegularPlayer
     }
   }
 }
-    `;
+    ${RegularPlayerFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const RegisterDocument = gql`
+    mutation Register($playername: String!, $password: String!, $email: String!) {
+  createPlayer(
+    playerFields: {name: $playername, password: $password, email: $email}
+  ) {
+    errors {
+      field
+      message
+    }
+    player {
+      ...RegularPlayer
+    }
+  }
+}
+    ${RegularPlayerFragmentDoc}`;
+
+export function useRegisterMutation() {
+  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...RegularPlayer
+  }
+}
+    ${RegularPlayerFragmentDoc}`;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };

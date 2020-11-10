@@ -3,11 +3,13 @@ import React from "react";
 
 export interface WrapperCardProps {
   background?: string;
+  variant?: string;
 }
 
 export const WrapperCard: React.FC<WrapperCardProps> = ({
   children,
   background,
+  variant = "regular"
 }) => {
   return (
     <Box w="340px" h="474px">
@@ -19,7 +21,8 @@ export const WrapperCard: React.FC<WrapperCardProps> = ({
           backgroundRepeat: "no-repeat",
           backgroundSize: "contain",
           padding: "40px",
-          paddingTop: "60px"
+          paddingTop: variant === "regular" ? "50px" : "40px"
+
         }}
       >
         {children}
