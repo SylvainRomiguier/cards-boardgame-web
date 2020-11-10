@@ -7,13 +7,14 @@ import {
 import { Form, Formik } from "formik";
 import React from "react";
 import { InputField, InputFieldProps } from "../components/InputField";
+import { Story } from "@storybook/react/types-6-0";
 
 export default {
   title: "components/Input Field",
   component: InputField,
 };
 
-const Story = (args: InputFieldProps) => (
+const Template: Story<InputFieldProps> = (args) => (
   <ThemeProvider theme={theme}>
     <ColorModeProvider>
       <CSSReset />
@@ -33,17 +34,17 @@ const Story = (args: InputFieldProps) => (
   </ThemeProvider>
 );
 
-export const Simple = Story.bind({});
+export const Simple = Template.bind({});
 Simple.args = {
   name: "playerName",
   label: "Player Name",
-  placeholder: "your name"
+  placeholder: "your name",
 };
 
-export const Password = Story.bind({});
+export const Password = Template.bind({});
 Password.args = {
   name: "password",
   label: "Password",
   placeholder: "password",
-  type: "password"
+  type: "password",
 };

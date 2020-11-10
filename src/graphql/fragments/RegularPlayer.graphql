@@ -1,0 +1,8 @@
+fragment RegularPlayer on Player {
+    id
+    name
+    email
+    lastLogin
+    rank
+    avatar
+}

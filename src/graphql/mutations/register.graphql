@@ -1,0 +1,13 @@
+mutation Register($playername: String!, $password: String!, $email: String!) {
+  createPlayer(
+    playerFields: { name: $playername, password: $password, email: $email }
+  ) {
+    errors {
+      field
+      message
+    }
+    player {
+      ...RegularPlayer
+    }
+  }
+}

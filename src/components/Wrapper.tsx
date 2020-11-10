@@ -11,10 +11,10 @@ export const Wrapper: React.FC<WrapperProps> = ({
 }) => {
   return (
     <Box
-      p={4}
+      p={variant === "regular" ? 4 : 2}
       mt={8}
       mx="auto"
-      maxW={variant === "regular" ? "80%" : "40%"}
+      maxW={variant === "regular" ? "80%" : "100%"}
       w="100%"
       d="flex"
       justifyContent="center"
