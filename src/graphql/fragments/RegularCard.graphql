@@ -1,0 +1,7 @@
+fragment RegularCard on Card {
+  id
+  title
+  text
+  picture
+  value
+}

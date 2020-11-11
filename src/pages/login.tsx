@@ -4,10 +4,12 @@ import React from "react";
 import { useLoginMutation } from "../generated/graphql";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
-import * as cardBackground from "../assets/cardBackgrounds/fond_carte_09.png";
 import { WrapperCard } from "../components/WrapperCard";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { server } from "../constants";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 export interface LoginProps {
   variant?: "small" | "regular";
@@ -17,7 +19,7 @@ export const Login: React.FC<LoginProps> = ({ variant = "regular" }) => {
   const [, login] = useLoginMutation();
   return (
     <Wrapper variant={variant}>
-      <WrapperCard background={cardBackground}>
+      <WrapperCard background={`${server}/assets/fond_carte_09.png`}>
         <Formik
           initialValues={{ playerName: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
@@ -66,4 +68,4 @@ export const Login: React.FC<LoginProps> = ({ variant = "regular" }) => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);
