@@ -3,25 +3,30 @@ import {
   theme,
   ColorModeProvider,
   CSSReset,
+  Flex,
 } from "@chakra-ui/core";
 import React from "react";
 import { WrapperCard, WrapperCardProps } from "../components/WrapperCard";
 import { Story } from "@storybook/react/types-6-0";
-import * as cardBackground1 from "../assets/cardBackgrounds/fond_carte_01.png";
-import * as cardBackground2 from "../assets/cardBackgrounds/fond_carte_11.png";
-import * as cardBackground3 from "../assets/cardBackgrounds/fond_carte_24.png";
+import { server } from "../constants";
 
 export default {
   title: "Components/WrapperCard",
   component: WrapperCard,
 };
 
+const fond1 = `${server}/assets/fond_carte_01.png`;
+const fond2 = `${server}/assets/fond_carte_11.png`;
+const fond3 = `${server}/assets/fond_carte_24.png`;
+
 const Template: Story<WrapperCardProps> = (args) => {
   return (
     <ThemeProvider theme={theme}>
       <ColorModeProvider>
         <CSSReset />
-        <WrapperCard {...args} />
+        <WrapperCard {...args}>
+          <Flex justifyContent="center" alignItems="center" h="100%">Content</Flex>
+        </WrapperCard>
       </ColorModeProvider>
     </ThemeProvider>
   );
@@ -29,15 +34,15 @@ const Template: Story<WrapperCardProps> = (args) => {
 
 export const Card1 = Template.bind({});
 Card1.args = {
-  background: cardBackground1,
+  background: fond1,
 };
 
 export const Card2 = Template.bind({});
 Card2.args = {
-  background: cardBackground2,
+  background: fond2,
 };
 
 export const Card3 = Template.bind({});
 Card3.args = {
-  background: cardBackground3,
+  background: fond3,
 };

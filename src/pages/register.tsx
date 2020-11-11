@@ -4,10 +4,12 @@ import React from "react";
 import { useRegisterMutation } from "../generated/graphql";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
-import * as cardBackground from "../assets/cardBackgrounds/fond_carte_11.png";
 import { WrapperCard } from "../components/WrapperCard";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { server } from "../constants";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 export interface RegisterProps {
   variant?: "small" | "regular";
@@ -18,7 +20,7 @@ export const Register: React.FC<RegisterProps> = ({ variant = "regular" }) => {
   const toast = useToast();
   return (
     <Wrapper variant={variant}>
-      <WrapperCard background={cardBackground}>
+      <WrapperCard background={`${server}/assets/fond_carte_11.png`}>
         <Formik
           initialValues={{ playerName: "", password: "", email: "" }}
           onSubmit={async (values, { setErrors }) => {
@@ -93,4 +95,4 @@ export const Register: React.FC<RegisterProps> = ({ variant = "regular" }) => {
   );
 };
 
-export default Register;
+export default  withUrqlClient(createUrqlClient)(Register);

@@ -140,6 +140,11 @@ export type NamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type RegularCardFragment = (
+  { __typename?: 'Card' }
+  & Pick<Card, 'id' | 'title' | 'text' | 'picture' | 'value'>
+);
+
 export type RegularPlayerFragment = (
   { __typename?: 'Player' }
   & Pick<Player, 'id' | 'name' | 'email' | 'lastLogin' | 'rank' | 'avatar'>
@@ -194,6 +199,17 @@ export type RegisterMutation = (
   ) }
 );
 
+export type CardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CardsQuery = (
+  { __typename?: 'Query' }
+  & { cards: Array<(
+    { __typename?: 'Card' }
+    & RegularCardFragment
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -205,6 +221,15 @@ export type MeQuery = (
   )> }
 );
 
+export const RegularCardFragmentDoc = gql`
+    fragment RegularCard on Card {
+  id
+  title
+  text
+  picture
+  value
+}
+    `;
 export const RegularPlayerFragmentDoc = gql`
     fragment RegularPlayer on Player {
   id
@@ -259,6 +284,17 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const CardsDocument = gql`
+    query Cards {
+  cards {
+    ...RegularCard
+  }
+}
+    ${RegularCardFragmentDoc}`;
+
+export function useCardsQuery(options: Omit<Urql.UseQueryArgs<CardsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CardsQuery>({ query: CardsDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
