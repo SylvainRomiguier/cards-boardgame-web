@@ -38,15 +38,13 @@ export const Register: React.FC<RegisterProps> = ({ variant = "regular" }) => {
                 isClosable: true
               });
             } else if (response.data?.createPlayer.player) {
-              console.log(response.data?.createPlayer.player);
-              // TODO : création player ok
               toast({
                 title: "Player created",
-                description: `${response.data.createPlayer.player.name} is alive !`,
+                description: `An email has been sent to ${response.data.createPlayer.player.email} to activate your account.`,
                 status: "success",
                 isClosable: true
               });
-              // router.push("/");
+              setTimeout(() => router.push("/login"), 3000);
             }
           }}
         >

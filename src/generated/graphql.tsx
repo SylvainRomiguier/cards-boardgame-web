@@ -52,6 +52,7 @@ export type Player = {
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['Int']>;
+  active: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -59,6 +60,9 @@ export type Mutation = {
   createCard: Card;
   updateCard?: Maybe<Card>;
   removeCard: Scalars['Boolean'];
+  forgotPassword: Scalars['Boolean'];
+  changePassword: Scalars['Boolean'];
+  activateAccount: Scalars['Boolean'];
   createPlayer: UserResponse;
   updatePlayer?: Maybe<Player>;
   removePlayer: Scalars['Boolean'];
@@ -86,6 +90,22 @@ export type MutationUpdateCardArgs = {
 
 export type MutationRemoveCardArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
+};
+
+
+export type MutationActivateAccountArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -148,6 +168,37 @@ export type RegularCardFragment = (
 export type RegularPlayerFragment = (
   { __typename?: 'Player' }
   & Pick<Player, 'id' | 'name' | 'email' | 'lastLogin' | 'rank' | 'avatar'>
+);
+
+export type ActivateAccountMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ActivateAccountMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'activateAccount'>
+);
+
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'changePassword'>
+);
+
+export type ForgotPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgotPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'forgotPassword'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -240,6 +291,33 @@ export const RegularPlayerFragmentDoc = gql`
   avatar
 }
     `;
+export const ActivateAccountDocument = gql`
+    mutation ActivateAccount($token: String!) {
+  activateAccount(token: $token)
+}
+    `;
+
+export function useActivateAccountMutation() {
+  return Urql.useMutation<ActivateAccountMutation, ActivateAccountMutationVariables>(ActivateAccountDocument);
+};
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($token: String!, $newPassword: String!) {
+  changePassword(token: $token, newPassword: $newPassword)
+}
+    `;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
+};
 export const LoginDocument = gql`
     mutation Login($playername: String!, $password: String!) {
   login(playerFields: {name: $playername, password: $password}) {
