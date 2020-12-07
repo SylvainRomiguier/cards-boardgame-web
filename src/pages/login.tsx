@@ -23,15 +23,15 @@ export const Login: React.FC<LoginProps> = ({ variant = "regular" }) => {
     <Wrapper variant={variant}>
       <WrapperCard background={`${server}/assets/fond_carte_09.png`}>
         <Formik
-          initialValues={{ playerName: "", password: "" }}
+          initialValues={{ userName: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
             const response = await login({
-              playername: values.playerName,
+              name: values.userName,
               password: values.password,
             });
             if (response.data?.login.errors) {
               setErrors(toErrorMap(response.data.login.errors));
-            } else if (response.data?.login.player) {
+            } else if (response.data?.login.user) {
               router.push("/");
             }
           }}
@@ -40,9 +40,9 @@ export const Login: React.FC<LoginProps> = ({ variant = "regular" }) => {
             <Form>
               <Box p={2}>
                 <InputField
-                  name="playerName"
+                  name="userName"
                   placeholder="your name"
-                  label="Player name"
+                  label="User name"
                 />
               </Box>
               <Box p={2}>

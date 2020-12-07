@@ -1,0 +1,13 @@
+mutation CreatePlayer($name: String!, $password: String!, $email: String!) {
+  createPlayer(
+    userFields: { name: $name, password: $password, email: $email }
+  ) {
+    errors {
+      field
+      message
+    }
+    player {
+      ...RegularPlayer
+    }
+  }
+}

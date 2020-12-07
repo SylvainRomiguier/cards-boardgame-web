@@ -1,0 +1,8 @@
+fragment RegularStaff on Staff {
+    id
+    name
+    email
+    lastLogin
+    avatar
+    admin
+}

@@ -1,0 +1,3 @@
+mutation ActivatePlayer($token: String!) {
+  activatePlayer(token: $token)
+}

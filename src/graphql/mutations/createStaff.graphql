@@ -1,0 +1,13 @@
+mutation CreateStaff($name: String!, $password: String!, $email: String!) {
+  createStaff(
+    userFields: { name: $name, password: $password, email: $email }
+  ) {
+    errors {
+      field
+      message
+    }
+    staff {
+      ...RegularStaff
+    }
+  }
+}

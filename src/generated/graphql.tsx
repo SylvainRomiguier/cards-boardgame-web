@@ -16,9 +16,9 @@ export type Query = {
   __typename?: 'Query';
   cards: Array<Card>;
   card?: Maybe<Card>;
-  me?: Maybe<Player>;
-  Players: Array<Player>;
-  Player?: Maybe<Player>;
+  me?: Maybe<User>;
+  users: Array<User>;
+  user: User;
 };
 
 
@@ -27,7 +27,7 @@ export type QueryCardArgs = {
 };
 
 
-export type QueryPlayerArgs = {
+export type QueryUserArgs = {
   id: Scalars['Int'];
 };
 
@@ -42,17 +42,16 @@ export type Card = {
   picture: Scalars['String'];
 };
 
-export type Player = {
-  __typename?: 'Player';
+export type User = {
+  __typename?: 'User';
   id: Scalars['Int'];
+  kind: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   lastLogin: Scalars['String'];
   name: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
-  rank?: Maybe<Scalars['Int']>;
-  active: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -61,13 +60,13 @@ export type Mutation = {
   updateCard?: Maybe<Card>;
   removeCard: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
-  changePassword: Scalars['Boolean'];
-  activateAccount: Scalars['Boolean'];
-  createPlayer: UserResponse;
-  updatePlayer?: Maybe<Player>;
-  removePlayer: Scalars['Boolean'];
+  changePassword: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  createPlayer: UserResponse;
+  activatePlayer: Scalars['Boolean'];
+  updateStaff: UserResponse;
+  createStaff: UserResponse;
 };
 
 
@@ -104,41 +103,76 @@ export type MutationChangePasswordArgs = {
 };
 
 
-export type MutationActivateAccountArgs = {
-  token: Scalars['String'];
+export type MutationLoginArgs = {
+  userFields: NamePasswordInput;
 };
 
 
 export type MutationCreatePlayerArgs = {
-  playerFields: UserInput;
+  userFields: UserInput;
 };
 
 
-export type MutationUpdatePlayerArgs = {
-  playerFields: UserUpdate;
+export type MutationActivatePlayerArgs = {
+  token: Scalars['String'];
+};
+
+
+export type MutationUpdateStaffArgs = {
+  admin: Scalars['Boolean'];
+  userFields: UserInput;
   id: Scalars['Int'];
 };
 
 
-export type MutationRemovePlayerArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type MutationLoginArgs = {
-  playerFields: NamePasswordInput;
+export type MutationCreateStaffArgs = {
+  userFields: UserInput;
 };
 
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
   player?: Maybe<Player>;
+  staff?: Maybe<Staff>;
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type Player = {
+  __typename?: 'Player';
+  id: Scalars['Int'];
+  kind: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  lastLogin: Scalars['String'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
+  rank?: Maybe<Scalars['Int']>;
+  active: Scalars['Boolean'];
+};
+
+export type Staff = {
+  __typename?: 'Staff';
+  id: Scalars['Int'];
+  kind: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  lastLogin: Scalars['String'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
+  admin: Scalars['Boolean'];
+};
+
+export type NamePasswordInput = {
+  name: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type UserInput = {
@@ -148,18 +182,6 @@ export type UserInput = {
   avatar?: Maybe<Scalars['String']>;
 };
 
-export type UserUpdate = {
-  name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  avatar?: Maybe<Scalars['String']>;
-};
-
-export type NamePasswordInput = {
-  name: Scalars['String'];
-  password: Scalars['String'];
-};
-
 export type RegularCardFragment = (
   { __typename?: 'Card' }
   & Pick<Card, 'id' | 'title' | 'text' | 'picture' | 'value'>
@@ -167,17 +189,27 @@ export type RegularCardFragment = (
 
 export type RegularPlayerFragment = (
   { __typename?: 'Player' }
-  & Pick<Player, 'id' | 'name' | 'email' | 'lastLogin' | 'rank' | 'avatar'>
+  & Pick<Player, 'id' | 'name' | 'email' | 'lastLogin' | 'active' | 'rank' | 'avatar'>
 );
 
-export type ActivateAccountMutationVariables = Exact<{
+export type RegularStaffFragment = (
+  { __typename?: 'Staff' }
+  & Pick<Staff, 'id' | 'name' | 'email' | 'lastLogin' | 'avatar' | 'admin'>
+);
+
+export type RegularUserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'name' | 'email' | 'lastLogin'>
+);
+
+export type ActivatePlayerMutationVariables = Exact<{
   token: Scalars['String'];
 }>;
 
 
-export type ActivateAccountMutation = (
+export type ActivatePlayerMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'activateAccount'>
+  & Pick<Mutation, 'activatePlayer'>
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -188,7 +220,58 @@ export type ChangePasswordMutationVariables = Exact<{
 
 export type ChangePasswordMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'changePassword'>
+  & { changePassword: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & RegularUserFragment
+    )> }
+  ) }
+);
+
+export type CreatePlayerMutationVariables = Exact<{
+  name: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
+}>;
+
+
+export type CreatePlayerMutation = (
+  { __typename?: 'Mutation' }
+  & { createPlayer: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, player?: Maybe<(
+      { __typename?: 'Player' }
+      & RegularPlayerFragment
+    )> }
+  ) }
+);
+
+export type CreateStaffMutationVariables = Exact<{
+  name: Scalars['String'];
+  password: Scalars['String'];
+  email: Scalars['String'];
+}>;
+
+
+export type CreateStaffMutation = (
+  { __typename?: 'Mutation' }
+  & { createStaff: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, staff?: Maybe<(
+      { __typename?: 'Staff' }
+      & RegularStaffFragment
+    )> }
+  ) }
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -202,7 +285,7 @@ export type ForgotPasswordMutation = (
 );
 
 export type LoginMutationVariables = Exact<{
-  playername: Scalars['String'];
+  name: Scalars['String'];
   password: Scalars['String'];
 }>;
 
@@ -214,9 +297,9 @@ export type LoginMutation = (
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
-    )>>, player?: Maybe<(
-      { __typename?: 'Player' }
-      & RegularPlayerFragment
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & RegularUserFragment
     )> }
   ) }
 );
@@ -227,27 +310,6 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'logout'>
-);
-
-export type RegisterMutationVariables = Exact<{
-  playername: Scalars['String'];
-  password: Scalars['String'];
-  email: Scalars['String'];
-}>;
-
-
-export type RegisterMutation = (
-  { __typename?: 'Mutation' }
-  & { createPlayer: (
-    { __typename?: 'UserResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, player?: Maybe<(
-      { __typename?: 'Player' }
-      & RegularPlayerFragment
-    )> }
-  ) }
 );
 
 export type CardsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -267,8 +329,8 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
-    { __typename?: 'Player' }
-    & RegularPlayerFragment
+    { __typename?: 'User' }
+    & RegularUserFragment
   )> }
 );
 
@@ -287,27 +349,88 @@ export const RegularPlayerFragmentDoc = gql`
   name
   email
   lastLogin
+  active
   rank
   avatar
 }
     `;
-export const ActivateAccountDocument = gql`
-    mutation ActivateAccount($token: String!) {
-  activateAccount(token: $token)
+export const RegularStaffFragmentDoc = gql`
+    fragment RegularStaff on Staff {
+  id
+  name
+  email
+  lastLogin
+  avatar
+  admin
+}
+    `;
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  name
+  email
+  lastLogin
+}
+    `;
+export const ActivatePlayerDocument = gql`
+    mutation ActivatePlayer($token: String!) {
+  activatePlayer(token: $token)
 }
     `;
 
-export function useActivateAccountMutation() {
-  return Urql.useMutation<ActivateAccountMutation, ActivateAccountMutationVariables>(ActivateAccountDocument);
+export function useActivatePlayerMutation() {
+  return Urql.useMutation<ActivatePlayerMutation, ActivatePlayerMutationVariables>(ActivatePlayerDocument);
 };
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
-  changePassword(token: $token, newPassword: $newPassword)
+  changePassword(token: $token, newPassword: $newPassword) {
+    errors {
+      field
+      message
+    }
+    user {
+      ...RegularUser
+    }
+  }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const CreatePlayerDocument = gql`
+    mutation CreatePlayer($name: String!, $password: String!, $email: String!) {
+  createPlayer(userFields: {name: $name, password: $password, email: $email}) {
+    errors {
+      field
+      message
+    }
+    player {
+      ...RegularPlayer
+    }
+  }
+}
+    ${RegularPlayerFragmentDoc}`;
+
+export function useCreatePlayerMutation() {
+  return Urql.useMutation<CreatePlayerMutation, CreatePlayerMutationVariables>(CreatePlayerDocument);
+};
+export const CreateStaffDocument = gql`
+    mutation CreateStaff($name: String!, $password: String!, $email: String!) {
+  createStaff(userFields: {name: $name, password: $password, email: $email}) {
+    errors {
+      field
+      message
+    }
+    staff {
+      ...RegularStaff
+    }
+  }
+}
+    ${RegularStaffFragmentDoc}`;
+
+export function useCreateStaffMutation() {
+  return Urql.useMutation<CreateStaffMutation, CreateStaffMutationVariables>(CreateStaffDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
@@ -319,18 +442,18 @@ export function useForgotPasswordMutation() {
   return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
 };
 export const LoginDocument = gql`
-    mutation Login($playername: String!, $password: String!) {
-  login(playerFields: {name: $playername, password: $password}) {
+    mutation Login($name: String!, $password: String!) {
+  login(userFields: {name: $name, password: $password}) {
     errors {
       field
       message
     }
-    player {
-      ...RegularPlayer
+    user {
+      ...RegularUser
     }
   }
 }
-    ${RegularPlayerFragmentDoc}`;
+    ${RegularUserFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -343,25 +466,6 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
-};
-export const RegisterDocument = gql`
-    mutation Register($playername: String!, $password: String!, $email: String!) {
-  createPlayer(
-    playerFields: {name: $playername, password: $password, email: $email}
-  ) {
-    errors {
-      field
-      message
-    }
-    player {
-      ...RegularPlayer
-    }
-  }
-}
-    ${RegularPlayerFragmentDoc}`;
-
-export function useRegisterMutation() {
-  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const CardsDocument = gql`
     query Cards {
@@ -377,10 +481,10 @@ export function useCardsQuery(options: Omit<Urql.UseQueryArgs<CardsQueryVariable
 export const MeDocument = gql`
     query Me {
   me {
-    ...RegularPlayer
+    ...RegularUser
   }
 }
-    ${RegularPlayerFragmentDoc}`;
+    ${RegularUserFragmentDoc}`;
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });

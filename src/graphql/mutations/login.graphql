@@ -1,11 +1,11 @@
-mutation Login($playername: String!, $password: String!) {
-  login(playerFields: { name: $playername, password: $password }) {
+mutation Login($name: String!, $password: String!) {
+  login(userFields: { name: $name, password: $password }) {
     errors {
       field
       message
     }
-    player {
-      ...RegularPlayer
+    user {
+      ...RegularUser
     }
   }
 }

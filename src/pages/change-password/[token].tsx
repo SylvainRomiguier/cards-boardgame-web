@@ -10,6 +10,7 @@ import { server } from '../../constants';
 import { useChangePasswordMutation } from '../../generated/graphql';
 import { withUrqlClient, WithUrqlProps } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
+import { toErrorMap } from '../../utils/toErrorMap';
 
 export const ChangePassword: NextPage<{token: string, variant?: "regular" | "small"}> = ({token, variant = "regular"}) => {
     const router = useRouter();
@@ -25,9 +26,15 @@ export const ChangePassword: NextPage<{token: string, variant?: "regular" | "sma
                     token: token,
                     newPassword: values.newPassword,
                   });
-                  if (!response.data?.changePassword) {
-                    setErrors({newPassword: "Le jeton a expiré ... veuillez réitérez votre demande."});
-                  } else if (response.data?.changePassword) {
+                  if(response.data?.changePassword.errors) {
+                  setErrors(toErrorMap(response.data.changePassword.errors));
+                  toast({
+                    title: "Error",
+                    description: "please follow the instructions.",
+                    status: "warning",
+                    isClosable: true
+                  });
+                } else if (response.data?.changePassword.player) {
                     toast({
                         title: "Password changed",
                         description: "The password has been successfully changed.",

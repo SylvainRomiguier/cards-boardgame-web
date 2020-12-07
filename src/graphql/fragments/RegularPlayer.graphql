@@ -3,6 +3,7 @@ fragment RegularPlayer on Player {
     name
     email
     lastLogin
+    active
     rank
     avatar
 }
